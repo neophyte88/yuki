@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "c5a81eeb16dbc93e7a84acc41e385c2922d5be511d7752032a8cc7420bed032a"
+            "sha256": "d7320c7b6007c75389462d5a02f8c63536120daa05fa9de1a9a52311b70140fe"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -16,12 +16,36 @@
         ]
     },
     "default": {
+        "click": {
+            "hashes": [
+                "sha256:7682dc8afb30297001674575ea00d1814d808d6a36af415a82bd481d37ba7b8e",
+                "sha256:bb4d8133cb15a609f44e8213d9b391b0809795062913b383c62be0ee95b1db48"
+            ],
+            "markers": "python_version >= '3.7'",
+            "version": "==8.1.3"
+        },
+        "colorama": {
+            "hashes": [
+                "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44",
+                "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6"
+            ],
+            "markers": "platform_system == 'Windows'",
+            "version": "==0.4.6"
+        },
         "peewee": {
             "hashes": [
                 "sha256:2581520c8dfbacd9d580c2719ae259f0637a9e46eda47dfc0ce01864c6366205"
             ],
             "index": "pypi",
             "version": "==3.15.4"
+        },
+        "peewee-migrations": {
+            "hashes": [
+                "sha256:225ccff8535e9d8b4b8aa4697d1d93eca5f651477708f6dfeb60168256e976fb",
+                "sha256:813f7089946aa26228d1e40daa0c30746ca94b805a449cc930f499ca32f5929f"
+            ],
+            "index": "pypi",
+            "version": "==0.3.32"
         }
     },
     "develop": {}

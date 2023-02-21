@@ -1,0 +1,10 @@
+{
+  "prerun": "# some code here",
+  "directory": "migrations",
+  "history": "migratehistory",
+  "models": [
+    "database.urls.RawUrl",
+    "database.urls.EnrichedUrl",
+    "database.source.Source"
+  ]
+}
