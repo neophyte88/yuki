@@ -5,6 +5,7 @@
   "models": [
     "database.urls.RawUrl",
     "database.urls.EnrichedUrl",
-    "database.source.Source"
+    "database.source.Source",
+    "database.keywords.Keyword"
   ]
 }
