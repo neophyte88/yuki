@@ -18,7 +18,7 @@ class Source(peewee.Model):
 
 @snapshot.append
 class RawUrl(peewee.Model):
-    url = TextField()
+    url = CharField(max_length=255)
     source = snapshot.ForeignKeyField(backref='url_source', index=True, model='source')
     added_on = DateTimeField(default=datetime.datetime.now)
     class Meta:
@@ -37,5 +37,14 @@ class EnrichedUrl(peewee.Model):
     added_on = DateTimeField(default=datetime.datetime.now)
     class Meta:
         table_name = "enriched_urls"
+
+
+@snapshot.append
+class Keyword(peewee.Model):
+    label = CharField(max_length=255)
+    category = CharField(max_length=255)
+    added_on = DateTimeField(default=datetime.datetime.now)
+    class Meta:
+        table_name = "keywords"
 
 

@@ -9,8 +9,9 @@ class RawUrl(BaseModel):
 
     class Meta:
         table_name = "raw_urls"
+        collation = "utf8mb4_unicode_ci"
     
-    url      = pw.TextField()
+    url      = pw.CharField(max_length=255)
     source   = pw.ForeignKeyField(Source, backref="url_source")
     added_on = pw.DateTimeField(default=datetime.now)
 
@@ -18,6 +19,7 @@ class EnrichedUrl(BaseModel):
     
     class Meta:
         table_name = "enriched_urls"
+        collation = "utf8mb4_unicode_ci"
 
     url           = pw.ForeignKeyField(RawUrl, backref="url")
     effective_url = pw.TextField()

@@ -7,8 +7,13 @@ name = "pypi"
 peewee = "*"
 peewee-migrations = "*"
 pymysql = "*"
+beautifulsoup4 = "*"
+cryptography = "*"
 
 [dev-packages]
 
 [requires]
 python_version = "3.8"
+
+[packages.requests]
+extras = [ "security",]

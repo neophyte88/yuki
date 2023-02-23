@@ -8,6 +8,6 @@ class Keyword(BaseModel):
     class Meta:
         table_name = "keywords"
     
-    label       = pw.CharField(max_length=255)
+    label       = pw.CharField(max_length=255, null=False)
     category         = pw.CharField(max_length=255)
     added_on    = pw.DateTimeField(default= datetime.now)

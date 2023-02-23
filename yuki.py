@@ -1,3 +1,4 @@
-from database import create_tables
+from core.scrapers.source_scrapers import AhamiaScraper
 
-create_tables()
+test = AhamiaScraper()
+test.run()
