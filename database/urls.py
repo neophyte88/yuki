@@ -11,7 +11,7 @@ class RawUrl(BaseModel):
         table_name = "raw_urls"
         collation = "utf8mb4_unicode_ci"
     
-    url      = pw.CharField(max_length=255)
+    url      = pw.CharField(max_length=255, null=False)
     source   = pw.ForeignKeyField(Source, backref="url_source")
     added_on = pw.DateTimeField(default=datetime.now)
 

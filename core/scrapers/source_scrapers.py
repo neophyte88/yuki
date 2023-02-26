@@ -9,6 +9,8 @@ from database.source import Source
 from database.urls import RawUrl
 from database.keywords import Keyword
 from database import database as DB
+
+from loguru import logger
 class SourceScraper:
     def __init__(self, url):
         self.url = url
@@ -29,19 +31,21 @@ class RawUrlIngestor:
 
     def ingest(self, urls, source):
         #creates raw url entries in the raw_urls table if url does not exist for a given source, using db.atomic() to ensure that all urls are added to the database
-        with DB.atomic():
-            for link in urls:
-                try:
-                    RawUrl.get(RawUrl.url == link, RawUrl.source == source)
-                except RawUrl.DoesNotExist:
-                    data_dict = {
-                        "url": link,
-                        "source": source,
-                        "added_on": datetime.now()
-                    }
-                    print(data_dict)
-                    entry = RawUrl(**data_dict)
-                    entry.save()
+        # with DB.atomic():
+        logger.info(f"Ingesting urls to database | {datetime.now()}")
+        for link in urls:
+            try:
+                RawUrl.get(RawUrl.url == link, RawUrl.source == source)
+            except RawUrl.DoesNotExist:
+                data_dict = {
+                    "url": link,
+                    "source": source,
+                    "added_on": datetime.now()
+                }
+                print(data_dict)
+                entry = RawUrl(**data_dict)
+                entry.save()
+                print(entry.url)
 
 
 class AhamiaScraper(SourceScraper):
@@ -56,6 +60,7 @@ class AhamiaScraper(SourceScraper):
     #get urls method for ahamia scraper will use the search query to get urls from ahamia using url_suffix, keywords will be appended to the url
     #keywords are taken from the keywords table
     def get_urls(self):
+        logger.info(f"Creating query urls for Ahamia | {datetime.now()}")
         urls = []
         keywords = Keyword.select()
         for keyword in keywords:
@@ -66,6 +71,7 @@ class AhamiaScraper(SourceScraper):
     def sanitize(self, urls):
         #sanitize urls by removing duplicates and non url strings
         #sanitizing urls will be done by removing duplicates and non url strings, non url strings can be identified by the presence of a dot in the url, http or https, .onion
+        logger.info(f"Sanitizing urls from Ahamia | {datetime.now()}")
         sanitized_urls = []
         for url in urls:
             if url not in sanitized_urls:
@@ -77,6 +83,7 @@ class AhamiaScraper(SourceScraper):
         return sanitized_urls
     
     def scrape(self):
+        logger.info(f"Scraping urls from Ahamia | {datetime.now()}")
         urls = self.get_urls()
         scraped_urls = []
         for url in urls:
@@ -88,6 +95,8 @@ class AhamiaScraper(SourceScraper):
         return self.sanitize(scraped_urls)
     
     def run(self):
+        logger.info(f"Initiated scraping of {self.name} for urls | {datetime.now()}")
         scraped_urls = self.scrape()
         RawUrlIngestor().ingest(scraped_urls[::-1][:5], self.Source)
         print("Scraped {} urls from {}".format(len(scraped_urls), self.name))
+        logger.success(f"Yuki has scraped {len(scraped_urls)} urls from {self.name} | {datetime.now()}")

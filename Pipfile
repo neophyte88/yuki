@@ -9,11 +9,11 @@ peewee-migrations = "*"
 pymysql = "*"
 beautifulsoup4 = "*"
 cryptography = "*"
+requests = {extras = ["socks"], version = "*"}
+loguru = "*"
+colorama = "*"
 
 [dev-packages]
 
 [requires]
 python_version = "3.8"
-
-[packages.requests]
-extras = [ "security",]
