@@ -3,14 +3,17 @@
 #Scrapers will work using tor proxy, requests and beautifulsoup
 
 import requests
-from bs4 import BeautifulSoup
 from datetime import datetime
-from database.source import Source
-from database.urls import RawUrl
-from database.keywords import Keyword
-from database import database as DB
 
+from bs4 import BeautifulSoup
 from loguru import logger
+
+from database import database as DB
+from database.source import Source
+from database.urls import UnenrichedUrl
+from database.keywords import Keyword
+
+
 class SourceScraper:
     def __init__(self, url):
         self.url = url
@@ -31,26 +34,27 @@ class RawUrlIngestor:
 
     def ingest(self, urls, source):
         #creates raw url entries in the raw_urls table if url does not exist for a given source, using db.atomic() to ensure that all urls are added to the database
-        # with DB.atomic():
-        logger.info(f"Ingesting urls to database | {datetime.now()}")
-        for link in urls:
-            try:
-                RawUrl.get(RawUrl.url == link, RawUrl.source == source)
-            except RawUrl.DoesNotExist:
-                data_dict = {
-                    "url": link,
-                    "source": source,
-                    "added_on": datetime.now()
-                }
-                print(data_dict)
-                entry = RawUrl(**data_dict)
-                entry.save()
-                print(entry.url)
+        
+        with DB.atomic():
+            logger.info(f"Ingesting urls to database | {datetime.now()}")
+            for link in urls:
+                try:
+                    UnenrichedUrl.get(UnenrichedUrl.url == link, UnenrichedUrl.source == source)
+                except UnenrichedUrl.DoesNotExist:
+                    #parse link using urllib and convert to string when saving
+                    data_dict = {
+                        "link": link,
+                        "source": source,
+                        "added_on": datetime.now()
+                    }
+
+                    entry = UnenrichedUrl.create(**data_dict)
+                
 
 
 class AhamiaScraper(SourceScraper):
     def __init__(self):
-        self.Source = Source.get(Source.label == "Ahamia")
+        self.Source = Source.get(Source.label == "Ahmia.fi")
         self.url = self.Source.url
         self.url_suffix = "/search/?q="
         self.name = self.Source.label
@@ -59,6 +63,7 @@ class AhamiaScraper(SourceScraper):
     
     #get urls method for ahamia scraper will use the search query to get urls from ahamia using url_suffix, keywords will be appended to the url
     #keywords are taken from the keywords table
+    
     def get_urls(self):
         logger.info(f"Creating query urls for Ahamia | {datetime.now()}")
         urls = []
@@ -68,18 +73,24 @@ class AhamiaScraper(SourceScraper):
             urls.append(url)
         return urls
     #scrape method will use the get_urls method to get urls and scrape them using beautifulsoup then return the scraped urls
+    
     def sanitize(self, urls):
+
         #sanitize urls by removing duplicates and non url strings
         #sanitizing urls will be done by removing duplicates and non url strings, non url strings can be identified by the presence of a dot in the url, http or https, .onion
+        
         logger.info(f"Sanitizing urls from Ahamia | {datetime.now()}")
         sanitized_urls = []
         for url in urls:
             if url not in sanitized_urls:
                 if url.startswith("http") or ".onion" in url:
-                    if "redirect_url=" in url:
-                        sanitized_urls.append(url.split("redirect_url=")[1])
+                    if "ahmia.fi" not in url:
+                        if "redirect_url=" in url:
+                            sanitized_urls.append(url.split("redirect_url=")[1])
+                        else:
+                            sanitized_urls.append(url)
                     else:
-                        sanitized_urls.append(url)
+                        pass
         return sanitized_urls
     
     def scrape(self):
@@ -97,6 +108,7 @@ class AhamiaScraper(SourceScraper):
     def run(self):
         logger.info(f"Initiated scraping of {self.name} for urls | {datetime.now()}")
         scraped_urls = self.scrape()
-        RawUrlIngestor().ingest(scraped_urls[::-1][:5], self.Source)
-        print("Scraped {} urls from {}".format(len(scraped_urls), self.name))
+
+        RawUrlIngestor().ingest(scraped_urls, self.Source)
+        
         logger.success(f"Yuki has scraped {len(scraped_urls)} urls from {self.name} | {datetime.now()}")

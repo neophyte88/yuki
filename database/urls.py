@@ -5,13 +5,23 @@ import peewee as pw
 from .basemodel import BaseModel
 from .source import Source
 
-class RawUrl(BaseModel):
+# class RawUrl(BaseModel):
+
+#     class Meta:
+#         table_name = "raw_urls"
+#         collation = "utf8mb4_unicode_ci"
+    
+#     url      = pw.CharField(max_length=255, null=False)
+#     source   = pw.ForeignKeyField(Source, backref="url_source")
+#     added_on = pw.DateTimeField(default=datetime.now)
+
+class UnenrichedUrl(BaseModel):
 
     class Meta:
-        table_name = "raw_urls"
+        table_name = "unenriched_urls"
         collation = "utf8mb4_unicode_ci"
     
-    url      = pw.CharField(max_length=255, null=False)
+    link     = pw.CharField(max_length=255, null=False)
     source   = pw.ForeignKeyField(Source, backref="url_source")
     added_on = pw.DateTimeField(default=datetime.now)
 
@@ -21,11 +31,10 @@ class EnrichedUrl(BaseModel):
         table_name = "enriched_urls"
         collation = "utf8mb4_unicode_ci"
 
-    url           = pw.ForeignKeyField(RawUrl, backref="url")
+    url           = pw.ForeignKeyField(UnenrichedUrl, backref="url")
     effective_url = pw.TextField()
     url_hash      = pw.CharField(max_length=32, unique=True)
     contents      = pw.TextField()
     media_uri     = pw.TextField()
     keywords      = pw.TextField()
-    ip            = pw.CharField(max_length=20)
     added_on      = pw.DateTimeField(default=datetime.now)
