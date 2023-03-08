@@ -5,16 +5,6 @@ import peewee as pw
 from .basemodel import BaseModel
 from .source import Source
 
-# class RawUrl(BaseModel):
-
-#     class Meta:
-#         table_name = "raw_urls"
-#         collation = "utf8mb4_unicode_ci"
-    
-#     url      = pw.CharField(max_length=255, null=False)
-#     source   = pw.ForeignKeyField(Source, backref="url_source")
-#     added_on = pw.DateTimeField(default=datetime.now)
-
 class UnenrichedUrl(BaseModel):
 
     class Meta:

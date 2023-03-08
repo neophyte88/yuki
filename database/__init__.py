@@ -7,4 +7,4 @@ from .keywords import Keyword
 
 def create_tables():
     with database:
-        database.create_tables([Source,RawUrl,EnrichedUrl,Keyword, UnenrichedUrl])
+        database.create_tables([Source,EnrichedUrl,Keyword, UnenrichedUrl])
