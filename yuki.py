@@ -4,6 +4,10 @@ from colorama import Fore, Back, Style
 
 from core.scrapers.enrichment_scrapers import UrlEnricher
 from database.urls import UnenrichedUrl
+
+import click
+from commands.url_ingest import url_ingest
+from commands.url_enrich import url_enrich
 print(Fore.CYAN+ '/====================================================================\ '+'''
 |                               888      d8b                         |
 |                               888      Y8P                         |
@@ -21,7 +25,17 @@ print(Fore.CYAN+ '/=============================================================
 # test = AhamiaScraper()
 # test.run()
 
-test = UrlEnricher()
-urls = UnenrichedUrl.select()
-test.run(urls)
+# test = UrlEnricher()
+# urls = UnenrichedUrl.select()
+# test.run(urls)
 
+
+
+@click.group()
+def main():
+    """ユキ - Yuki"""
+
+if __name__ == '__main__':
+    main.add_command(url_ingest)
+    main.add_command(url_enrich)
+    main()
