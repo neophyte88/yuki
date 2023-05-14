@@ -23,8 +23,10 @@ class EnrichedUrl(BaseModel):
 
     url           = pw.ForeignKeyField(UnenrichedUrl, backref="url")
     effective_url = pw.TextField()
+    title         = pw.TextField()  #added title field to store the title of the page
     url_hash      = pw.CharField(max_length=32, unique=True)
     contents      = pw.TextField()
     media_uri     = pw.TextField()
     keywords      = pw.TextField()
     added_on      = pw.DateTimeField(default=datetime.now)
+    

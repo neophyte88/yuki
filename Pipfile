@@ -15,11 +15,13 @@ tbselenium = "*"
 stem = "*"
 nltk = "*"
 click = "*"
+flask = "*"
+flask-restful = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.8"
+python_version = "*"
 
 [packages.requests]
 extras = [ "socks",]

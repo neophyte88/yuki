@@ -29,6 +29,7 @@ class EnrichedDataIngestor:
                     EnrichedUrl.create(**url_dict)
                 except Exception as e:
                     logger.warning(f"Failed to ingest url | {e}")
+
 class EnrichmentScraperBase(ABC):
     def __init__(self):
         
@@ -68,10 +69,11 @@ class UrlEnricher(EnrichmentScraperBase):
                 
                 driver.get(url.link)
                 response = driver.page_source
+                title = driver.title
             
             # response = self.session.get(url.link)
             soup = BeautifulSoup(response.replace('\n', ""), "html.parser")
-            url_data = self._build_url_data(url, soup)
+            url_data = self._build_url_data(url, soup, title)
 
             return url_data
 
@@ -102,7 +104,7 @@ class UrlEnricher(EnrichmentScraperBase):
         url_hash.update(url.encode('utf-8'))
         return url_hash.hexdigest()
 
-    def _build_url_data(self,url,soup):
+    def _build_url_data(self,url,soup,title):
         #builds a dictionary of data for a given url
         #this data is then used to create an entry in the enriched_urls table
         
@@ -114,6 +116,7 @@ class UrlEnricher(EnrichmentScraperBase):
         url_data['media_uri'] = "|".join(self._get_media_uri(soup))
         url_data['keywords'] = "|".join(self._get_keywords(soup))
         url_data['added_on'] = datetime.now()
+        url_data['title'] = title
         
         return url_data
 

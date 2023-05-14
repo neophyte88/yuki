@@ -8,6 +8,7 @@ from database.urls import UnenrichedUrl
 import click
 from commands.url_ingest import url_ingest
 from commands.url_enrich import url_enrich
+
 print(Fore.CYAN+ '/====================================================================\ '+'''
 |                               888      d8b                         |
 |                               888      Y8P                         |
